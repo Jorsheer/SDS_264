@@ -2,7 +2,7 @@
 title: "Mini-Project"
 sidebar: false
 format:
-  html: default
+  pdf: default
 editor_options: 
   chunk_output_type: console
 ---
@@ -10,6 +10,7 @@ editor_options:
 library(viridis)
 library(maps)
 library(tidyverse)
+library(leaflet)
 ```
 
 The data for this project will be using the leading causes of death in the United States dataset, linked here: [https://data.cdc.gov/NCHS/NCHS-Leading-Causes-of-Death-United-States/bi63-dtpu/about_data]

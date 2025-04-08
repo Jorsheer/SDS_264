@@ -1,0 +1,25 @@
+---
+title: "RTipOfTheDayRQL"
+format: html
+---
+
+```{r}
+#install.packages("rgl")
+library("rgl")
+```
+```{r}
+data(iris)
+head(iris)
+```
+
+```{r}
+x <- sep.l <- iris$Sepal.Length
+y <- pet.l <- iris$Petal.Length
+z <- sep.w <- iris$Sepal.Width
+```
+
+```{r}
+rgl.open() # Open a new RGL device
+rgl.points(x, y, z, color ="lightgray") # Scatter plot
+```
+

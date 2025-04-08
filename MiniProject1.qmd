@@ -1,0 +1,102 @@
+---
+title: "Mini-Project 1"
+sidebar: false
+format:
+  html: default
+editor_options: 
+  chunk_output_type: console
+---
+```{r}
+library(viridis)
+library(maps)
+library(tidyverse)
+```
+
+
+```{r}
+cali_unemployment_data <- read_csv("C:/Users/charl/Documents/SDS_264/laborforceandunemployment_annual_2024627.csv")
+```
+
+```{r}
+cali_counties <- map_data('county','california')
+```
+
+```{r}
+cali_unemployment_data <- cali_unemployment_data |>
+  filter(Year == "2008") |>
+  filter(`Area Type` %in% c("County","Metropolitan Area")) |>
+  mutate(`Area Name` = str_to_lower(str_replace_all(`Area Name`, " County", "")))
+```
+
+```{r}
+map_data <- cali_counties |>
+  right_join(cali_unemployment_data, by = c("subregion" = "Area Name"))
+```
+
+```{r}
+map_data |>
+  ggplot(mapping = aes(x = long, y = lat,
+                          group = group)) + 
+  geom_polygon(aes(fill = `Unemployment Rate`), color = "black")
+```
+
+Interactive unemployment:
+
+```{r}
+library(tigris)
+
+us_counties_sf <- counties(cb = TRUE, class = "sf")
+
+california_counties_sf <- us_counties_sf |> 
+  filter(STATEFP == "06")
+
+california_counties_sf <- california_counties_sf |>
+  mutate("NAME" = str_to_lower("NAME"))
+
+map_data_sf <- california_counties_sf |>
+  right_join(cali_unemployment_data, by = c("NAME" = "Area Name"))
+```
+
+```{r}
+bins <- c(0, 3, 4, 5, 6, 8, 10, 12, 15, 20, Inf)
+pal <- colorBin("YlOrRd", domain = map_data_sf$`Unemployment Rate`, bins = bins)
+
+# Create labels that pop up when we hover over a state.  The labels must
+#   be part of a list where each entry is tagged as HTML code.
+library(htmltools)
+library(glue)
+
+map_data_sf <- map_data_sf |>
+  mutate(labels = str_c(NAME, ": ", `Unemployment Rate`, "%"))
+
+# If want more HTML formatting, use these lines instead of those above:
+#states <- states |>
+#  mutate(labels = glue("<strong>{name}</strong><br/>{density} people / #mi<sup>2</sup>"))
+
+labels <- lapply(map_data_sf$labels, HTML)
+
+leaflet(map_data_sf) |>
+  addTiles() |>
+  addPolygons(
+    fillColor = ~pal(`Unemployment Rate`),
+    weight = 1,
+    opacity = 1,
+    color = "white",
+    dashArray = "3",
+    fillOpacity = 0.7,
+    highlightOptions = highlightOptions(
+      weight = 5,
+      color = "#666",
+      dashArray = "",
+      fillOpacity = 0.7,
+      bringToFront = TRUE),
+    label = labels,
+    labelOptions = labelOptions(
+      style = list("font-weight" = "normal", padding = "3px 8px"),
+      textsize = "15px",
+      direction = "auto")) |>
+  addLegend(pal = pal, values = ~`Unemployment Rate`, opacity = 0.7, title = NULL,
+    position = "bottomright")
+```
+
+
