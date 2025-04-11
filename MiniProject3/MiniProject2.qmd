@@ -4,11 +4,12 @@ format: html
 ---
 
 ## Introduction
+
 Initially, we wanted to analyze data related to running, collegiate D3 track and field race times and statistics. However, we faced difficulties when we tried to scrape the data from the website. We decided to pivot to economics as we are both interested in the subject. We chose to gather GDP data by country from Wikipedia because it is challenging to find a comprehensive CSV file with the information of a GDP forecast vs. actual forecast and then comparing it to population data. By scraping and tidying this data, we can use this data to explore economic trends and compare GDP across different countries.
 
 ## Sources
 
-"https://en.wikipedia.org/wiki/List_of_countries_by_GDP_(nominal)": Used to get our nominal GDP data from wikipedia. Table consists of various data, but we only use Country and GDP.
+"https://en.wikipedia.org/wiki/List_of_countries_by_GDP\_(nominal)": Used to get our nominal GDP data from wikipedia. Table consists of various data, but we only use Country and GDP.
 
 "https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_by_population": Used to get our population data from wikipedia. Table consists of various data, but we only use Country and population.
 
@@ -26,7 +27,6 @@ library(leaflet)
 library(htmltools)
 
 ```
-
 
 ```{r}
 # Step 0: Check that scraping is allowed
@@ -56,7 +56,6 @@ GDP_data <- GDP_data |>
   filter(!row_number() %in% c(1, 2)) # Rename the second column to "Forecast" and remove unnecessary rows
 
 ```
-
 
 ```{r}
 # Step 0: Check that scraping is allowed
@@ -95,6 +94,7 @@ world_data <- GDP_data #rename to be more accurate
 ```
 
 ## Ethics
+
 Ethically, we made sure to check the robots.txt file and are not getting personal data from users. We made sure to not use any specific data, and are using data that is widely public knowledge.
 
 ## Insights and Questions
@@ -102,4 +102,5 @@ Ethically, we made sure to check the robots.txt file and are not getting persona
 Using this data, we wonder what trends could arise between population and GDP. How can we visualize population growth and GDP growth? What is the connection between high GDP per capita and geographical location? These are some of the questions that we wonder about this tibble we created.
 
 ## Summary
-This code scrapes GDP and population data from Wikipedia, cleans and merges the datasets, and prepares it for future analysis The dataset, world_data, contains GDP forecasts and population figures by country. We can use the data set to analyze trends between population and forecasted GDP by country. This can be presented using a variety of visual techniques such as leaflet maps, plots, and graphs. 
+
+This code scrapes GDP and population data from Wikipedia, cleans and merges the datasets, and prepares it for future analysis The dataset, world_data, contains GDP forecasts and population figures by country. We can use the data set to analyze trends between population and forecasted GDP by country. This can be presented using a variety of visual techniques such as leaflet maps, plots, and graphs.
