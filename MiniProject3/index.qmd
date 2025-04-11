@@ -15,4 +15,4 @@ about:
       href: mailto:charltonjosh8815@gmail.com
 ---
 
-Hi, I'm Josh Charlton.
+Hi, I'm Josh Charlton, welcome to my site! In this website, I have my current info, as well as a few projects I have been working on.
