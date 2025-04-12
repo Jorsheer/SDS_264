@@ -10,9 +10,13 @@ library(tidyverse)
 library(leaflet)
 ```
 
+## Introduction
+
 The data for this project will be using the leading causes of death in the United States dataset, linked here: \[https://data.cdc.gov/NCHS/NCHS-Leading-Causes-of-Death-United-States/bi63-dtpu/about_data\]
 
 For this (mini) project, we will be analyzing the different death statistics across the US for each individual state, specifically for the year 2016. The numeric data we will be analyzing is the age-adjusted rate for the highest cause of death, while the categorical data used is the leading cause of death for each state.
+
+## Loading in the Data
 
 Let's load in the data
 
@@ -52,6 +56,8 @@ Then we create a new table of just the highest cause of death.
 highest_cause_data <- main_data |>
   filter(`Cause Name` == highest_cause)
 ```
+
+## Plot
 
 Let's plot the categorical data, what exactly is causing the greatest amount of death for every state?
 
@@ -94,6 +100,8 @@ highest_cause_data |>
 ```
 
 From this graph we can see that areas such as the south are more impacted by their death rates than others areas. Specifically, their highest cause is heart disease, so we see that that is impacting them at a rate higher than other areas.
+
+## Interactive Plots
 
 Next we will load in our interactive plots using the sf library:
 

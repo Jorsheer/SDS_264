@@ -4,15 +4,35 @@ image: ole_logo.jpg
 toc: false
 about: 
   template: jolla
-  image-shape: round
+  image-shape: round #shape for photo of logo
   image-width: 17em
   links:
-    - text: LinkedIn
+    - text: LinkedIn #linked in link
       href: https://www.linkedin.com/in/josh-charlton-st-olaf/
     - text: GitHub
-      href: https://github.com/Jorsheer
+      href: https://github.com/Jorsheer #github link
     - text: Email
-      href: mailto:charltonjosh8815@gmail.com
+      href: mailto:charltonjosh8815@gmail.com #email link
 ---
 
-Hi, I'm Josh Charlton, welcome to my site! In this website, I have my current info, as well as a few projects I have been working on.
+Hi, I'm Josh Charlton, welcome to my site! In this website, I have my current info, as well as a few projects I have been working on. In my spare time, I love to work on other projects listed below. I mostly enjoy game development from the Godot Engine, and creating games there.
+
+::: centered-content
+## Games
+
+-   **Chess Strategy Game**\
+    A chess game with custom piece powers, built in Godot 4 with GDScript, C++, and C#. Includes an AI opponent and shop mechanic for piece upgrades.
+
+-   **Stressland**\
+    Mobile game built in Godot 4 with GDScript. Includes taking care of a tiny town that is always under stress due to their ever-demanding king.
+
+## Education
+
+**St. Olaf College** — *B.A. in Computer Science and Mathematics*\
+*Expected Graduation: May 2025*
+
+## Skills
+
+-   **Languages:** Python, C++, GDScript, C#, JavaScript, C, Java, R\
+-   **Tools:** Git, Godot, LaTeX, WebAssembly
+:::
