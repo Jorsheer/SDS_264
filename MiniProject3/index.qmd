@@ -2,8 +2,9 @@
 title: "Josh Charlton"
 image: ole_logo.jpg
 toc: false
-about: 
-  template: jolla
+
+about:
+  template: solana
   image-shape: round #shape for photo of logo
   image-width: 17em
   links:
