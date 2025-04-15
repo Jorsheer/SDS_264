@@ -1,25 +1,193 @@
 ---
-title: "RTipOfTheDayRQL"
-format: html
+title: "RGL Package"
+author: "Josh Charlton"
+date: "April 15, 2025"
+format:
+  revealjs:
+    theme: dark
+    slide-number: true
+    chalkboard: 
+      buttons: true
+    preview-links: auto
+editor_options: 
+  chunk_output_type: console
 ---
+
+```{r}
+library(tidyverse)
+library(gapminder)
+library(gganimate)
+library(ggridges)
+```
 
 ```{r}
 #install.packages("rgl")
 library("rgl")
 ```
-```{r}
+
+## What is RGL
+
+- Library for 3D models
+- visualization device system for R, using OpenGL or WebGL as the rendering backend.
+- Coded with R
+- Can export as interactive WebGL widgets
+
+## Loading in Data
+
+- This famous (Fisher's or Anderson's) iris data set gives the measurements in centimeters of the variables sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris. The species are Iris setosa, versicolor, and virginica.
+``` r 
 data(iris)
 head(iris)
 ```
 
+``` r
+x <- iris$Sepal.Length
+y <- iris$Petal.Length
+z <- iris$Sepal.Width
+```
 ```{r}
-x <- sep.l <- iris$Sepal.Length
-y <- pet.l <- iris$Petal.Length
-z <- sep.w <- iris$Sepal.Width
+data(iris)
+head(iris, 3)
+
+x <- iris$Sepal.Length
+y <- iris$Petal.Length
+z <- iris$Sepal.Width
+
+species_iris <- iris$Species
+```
+
+## How Three Variables is Typically Represented: Two Continuous, One Discrete
+
+```{r}
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
+  geom_point(size = 3) +
+  labs(title = "3 Variables in 2D: Color represents species")
+```
+
+## How Three Variables is Typically Represented: Three Continuous Variables
+
+```{r}
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, size = Sepal.Width)) +
+  geom_point() +
+  labs(title = "3 Variables in 2D: Size represents Sepal Width")
+```
+
+
+## Creating a 3D Plot
+``` {.r code-line-numbers="1-3|5-6"}
+x <- iris$Sepal.Length
+y <- iris$Petal.Length
+z <- iris$Sepal.Width
+
+plot3d(x, y, z, col = "blue", size = 5)
+rglwidget()
+```
+
+```{r, warning=FALSE}
+plot3d(x, y, z, col = "blue", size = 5)
+rglwidget()
+```
+## Adding axes labels
+``` r
+axes3d()
+title3d(xlab = "Sepal Length", 
+        ylab = "Petal Length", 
+        zlab = "Sepal Width")
 ```
 
 ```{r}
-rgl.open() # Open a new RGL device
-rgl.points(x, y, z, color ="lightgray") # Scatter plot
+plot3d(x, y, z, col = "blue", size = 5, type = "p")
+
+# Add axes and labels
+axes3d()
+title3d(xlab = "Sepal Length", 
+        ylab = "Petal Length", 
+        zlab = "Sepal Width")
+
+rglwidget()
+```
+## Adding color
+
+``` {.r code-line-numbers="1-2|4"}
+species_iris <- as.numeric(iris$Species)
+colors_iris <- c("red", "green", "blue")[species_iris]
+
+plot3d(x, y, z, col = colors_iris, size = 5, type = "p")
 ```
 
+```{r}
+species_iris <- as.numeric(iris$Species)
+colors_iris <- c("red", "green", "blue")[species_iris]
+
+plot3d(x, y, z, col = colors_iris, size = 5, type = "p")
+
+# Add axes and labels
+axes3d()
+title3d(xlab = "Sepal Length", 
+        ylab = "Petal Length", 
+        zlab = "Sepal Width")
+
+legend3d("topright", legend = levels(iris$Species), 
+         col = c("red", "green", "blue"), pch = 16)
+
+rglwidget()
+```
+
+## Different Points
+``` r
+plot3d(x, y, z, col = colors_iris, size = 5, type = "s")
+```
+```{r}
+species_iris <- as.numeric(iris$Species)
+colors_iris <- c("red", "green", "blue")[species_iris]
+
+plot3d(x, y, z, col = colors_iris, size = 5, type = "s")
+
+# Add axes and labels
+axes3d()
+title3d(xlab = "Sepal Length", 
+        ylab = "Petal Length", 
+        zlab = "Sepal Width")
+
+legend3d("topright", legend = levels(iris$Species), 
+         col = c("red", "green", "blue"), pch = 16)
+
+rglwidget()
+```
+
+## Loading in Topographic Data
+
+- Maunga Whau (Mt Eden) is one of about 50 volcanos in the Auckland volcanic field. This data set gives topographic information for Maunga Whau on a 10m by 10m grid.
+
+```{r}
+head(volcano)
+```
+
+## persp3d
+
+``` {.r code-line-numbers="1-2|4|6|8"}
+x <- 1:nrow(volcano)
+y <- 1:ncol(volcano)
+
+z <- volcano
+
+persp3d(x, y, z, col = "brown", axes = TRUE, xlab = "X", ylab = "Y", zlab = "Elevation")
+
+rglwidget()
+```
+
+```{r}
+open3d() # gets rid of legend and other info before
+
+x <- 1:nrow(volcano)
+y <- 1:ncol(volcano)
+
+z <- volcano
+
+persp3d(x, y, z, col = "brown", axes = TRUE, xlab = "X", ylab = "Y", zlab = "Elevation")
+
+
+rglwidget()
+```
+
+## Thank You!
