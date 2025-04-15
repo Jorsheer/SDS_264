@@ -176,6 +176,7 @@ persp3d(x, y, z, col = "brown", axes = TRUE, xlab = "X", ylab = "Y", zlab = "Ele
 rglwidget()
 ```
 
+## Final Demo
 ```{r}
 open3d() # gets rid of legend and other info before
 
