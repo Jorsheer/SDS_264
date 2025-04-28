@@ -5,10 +5,8 @@ account: charlt4
 server: rconnect.stolaf.edu
 hostUrl: https://rconnect.stolaf.edu/__api__
 appId: 866
-bundleId: 2288
+bundleId: 2477
 url: https://rconnect.stolaf.edu/content/ae5312b9-48dd-4665-87f0-23d66fc5ff0b/
 version: 1
-quarto_version: 1.5.57
-quarto_engines: knitr
 asMultiple: FALSE
-asStatic: FALSE
+asStatic: TRUE
