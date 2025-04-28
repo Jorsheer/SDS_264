@@ -1,0 +1,208 @@
+---
+title: "Sentiment analysis"
+format:
+  html: default
+editor_options: 
+  chunk_output_type: console
+---
+## Purpose
+
+The goal of this project is to see sentiment analysis of the two different genres of books: romance and sci fi. We will use various methods of observing differences, but mostly through regular expressions and bing sentiment analysis. We hope to find some sort of syntactical differences, and to try and see what separates the two genres.
+
+## Libraries
+
+Let's load in the libraries:
+```{r}
+#| include: FALSE
+
+library(tidyverse)
+library(tidytext)
+library(textdata)
+library(wordcloud)
+library(wordcloud2)
+library(viridis)
+library(ggthemes)
+library(gutenbergr)
+library(igraph)
+library(ggraph)
+```
+
+## Data
+
+Next, we will download two books for each genre. Note that this is way too small of a sample size to conclude anything important, but for this small analysis it does it's job.
+
+The two books imported for romance are:
+
+Pride and Prejudice by Jane Austen (ID 1342)
+
+Jane Eyre by Charlotte Brontë (ID 1260)
+
+The two books imported for sci-fi are:
+
+The Time Machine by H.G. Wells (ID 36)
+
+A Princess of Mars by Edgar Rice Burroughs (ID 5230)
+```{r}
+romance <- gutenberg_download(
+  c(1342, 1260),
+  mirror = "http://mirror.csclub.uwaterloo.ca/gutenberg/")
+
+sci_fi <- gutenberg_download(
+  c(36, 5230),
+  mirror = "http://mirror.csclub.uwaterloo.ca/gutenberg/")
+```
+
+## Lov
+
+First let's look at words such as love, loving, or lover. We can do this by creating the regular expression "^lov". We aim to see these in the romance novels, and not so much the sci fi.
+
+```{r}
+str_view(romance$text, "^lov")
+
+str_view(sci_fi$text, "^lov")
+```
+
+Now, the "^lov" is just at the start of the different lines in the dataset, and not the words, but overall we can see the staggering difference as presented.
+
+## Sci-Fi Terms
+
+Next, we will look and see the different sci-fi terms in the text. For this, I simply googled different sci-fi terms and decided on the words: clone, robot, alien, and planet. Therefore we use the regular expression "clone|robot|alien|planet" to see if there are any instances of them.
+
+```{r}
+str_view(romance$text, "clone|robot|alien|planet")
+
+str_view(sci_fi$text, "clone|robot|alien|planet")
+```
+
+We now can see that the sci-fi text contains more of these words, and we see the difference in how some of the words are used, such as alien.
+
+## Large Words
+
+Here, I just wanted to see what genre used more "elaborate" words, sci-fi or romance. Doing this, I take the first 2,000 words, and see how many of them are over 8 letters long.
+```{r}
+romance_words <- romance |>
+  unnest_tokens(word, text)
+
+romance_words_subset <- romance_words[1:2000,]
+
+sum(str_count(romance_words_subset$word, "^........"))
+
+sci_fi_words <- sci_fi |>
+  unnest_tokens(word, text)
+
+sci_fi_words_subset <- sci_fi_words[1:2000,]
+
+sum(str_count(sci_fi_words_subset$word, "^........"))
+```
+
+The result is pretty much the same, but again we are only taking 2,000 words in 2 different books for each, so there is not enough to conlude anything.
+
+## Bing Sentiments
+
+Next, we will look at the different bing sentiments, or the most common negative and positive sentiments used in both books. 
+
+```{r}
+#| warning: FALSE
+
+bing_sentiments <- get_sentiments(lexicon = "bing")
+
+romance_words |>
+  inner_join(bing_sentiments) |>
+  count(sentiment, word, sort = TRUE) |>
+  group_by(sentiment) |>
+  slice_max(n, n = 10) |>
+  ungroup() |>
+  ggplot(aes(x = fct_reorder(word, n), y = n, fill = sentiment)) +
+    geom_col() +  
+    coord_flip() +
+    facet_wrap(~ sentiment, scales = "free")
+
+sci_fi_words |>
+  inner_join(bing_sentiments) |>
+  count(sentiment, word, sort = TRUE) |>
+  group_by(sentiment) |>
+  slice_max(n, n = 10) |>
+  ungroup() |>
+  ggplot(aes(x = fct_reorder(word, n), y = n, fill = sentiment)) +
+    geom_col() +  
+    coord_flip() +
+    facet_wrap(~ sentiment, scales = "free")
+```
+
+I believe these results are a great representation of the genres themselves. For romance we see the negative word "miss" used a lot. It would that someone's heart is yearning, or at the very least, slightly clingy, but there are many characters in the novels such as miss darcy, so we can ignore that entry. Quite amusingly, invisible is the most common word used in the sci-fi, which is very unusual.
+
+## Wordcloud 
+
+Let's create a word cloud for the different genres, it is quite evident the different words for each genre.
+```{r}
+smart_stopwords <- get_stopwords(source = "smart")
+
+words <- romance_words |>
+  anti_join(smart_stopwords) |>
+  count(word) |>
+  filter(word != "NA") |>
+  arrange(desc(n))
+
+wordcloud(
+  words = words$word, 
+  freq = words$n, 
+  max.words = 20, 
+  random.order = FALSE
+)
+
+smart_stopwords <- get_stopwords(source = "smart")
+
+words <- sci_fi_words |>
+  anti_join(smart_stopwords) |>
+  count(word) |>
+  filter(word != "NA") |>
+  arrange(desc(n))
+
+wordcloud(
+  words = words$word, 
+  freq = words$n, 
+  max.words = 20, 
+  random.order = FALSE
+)
+```
+
+Again we see the differing genre words, such as martian and miss. This creates a better picture as the vocabulary used in these novels, and we can gather different themes just by connecting these words.
+
+## Romance Bigrams
+
+Lastly, just for fun, we can see the different bigrams in the romance novels.
+
+```{r}
+book_twowords <- romance |>
+  mutate(linenumber = row_number()) |>
+  ungroup() |>
+  unnest_tokens(bigram, text, token = "ngrams", n = 2) |>
+  filter(bigram != "NA")
+ 
+book_twowords |>
+  count(bigram, sort = TRUE)
+
+bigrams_filtered <- book_twowords |>
+  separate(bigram, c("word1", "word2"), sep = " ") |>
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word) |>
+  count(word1, word2, sort = TRUE) |>
+  filter(!is.na(word1) & !is.na(word2))
+
+bigram_graph <- bigrams_filtered |>
+  filter(n > 10) |>
+  graph_from_data_frame()
+
+a <- grid::arrow(type = "closed", length = unit(.15, "inches"))
+
+ggraph(bigram_graph, layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n), show.legend = FALSE,
+                 arrow = a, end_cap = circle(.07, 'inches')) +
+  geom_node_point(color = "lightblue", size = 5) +
+  geom_node_text(aes(label = name), vjust = 1, hjust = 1) +
+  theme_void()
+```
+
+It is neat to see the different characters mostly used, as miss seems to align with the differing characters in the novel. We also see this pattern for colonel and sir. From this, we can see that there are many female characters in these novels that have enough prevelance to become some of the top bigrams.
+
+Through this document, we can observe the different uses of romance and sci-fi, as well as their differing nuances that is unique to their respective genre. This method was mostly trying to obtain the main idea of the books, through the use of their vocab. We can then see trends of these words, and possibly try to predict the different story, or at the very least see how they compare to another genre.

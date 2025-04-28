@@ -10,6 +10,7 @@ website:
         text: Home
       - MiniProject1.qmd
       - MiniProject2.qmd
+      - SentimentAnalysis.qmd
 
 format:
   html:

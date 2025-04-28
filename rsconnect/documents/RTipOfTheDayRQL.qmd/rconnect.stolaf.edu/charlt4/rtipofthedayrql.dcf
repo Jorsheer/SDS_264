@@ -1,0 +1,12 @@
+name: rtipofthedayrql
+title: RTipOfTheDayRQL
+username: charlt4
+account: charlt4
+server: rconnect.stolaf.edu
+hostUrl: https://rconnect.stolaf.edu/__api__
+appId: 926
+bundleId: 2472
+url: https://rconnect.stolaf.edu/content/d18c7bfe-24c5-4a30-a8a5-6d2ca7e5b7f5/
+version: 1
+asMultiple: FALSE
+asStatic: TRUE
